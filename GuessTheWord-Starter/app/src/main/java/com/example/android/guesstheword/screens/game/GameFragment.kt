@@ -31,25 +31,11 @@ import com.example.android.guesstheword.databinding.GameFragmentBinding
  * Fragment where the game is played
  */
 class GameFragment : Fragment() {
-
-    // The current word
-    private var word = ""
-
-    // The current score
-    private var score = 0
-
-    // The list of words - the front of the list is the next word to guess
-    private lateinit var wordList: MutableList<String>
-
     private lateinit var binding: GameFragmentBinding
-
     private lateinit var viewModel: GameViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        Log.i(this::class.java.simpleName, "called ViewModelProviders.of")
-        viewModel = ViewModelProviders.of(this).get(GameViewModel::class.java)
-
         // Inflate view and obtain an instance of the binding class
         binding = DataBindingUtil.inflate(
                 inflater,
@@ -57,84 +43,35 @@ class GameFragment : Fragment() {
                 container,
                 false
         )
-
-        resetList()
-        nextWord()
+        Log.i(this::class.java.simpleName, "called ViewModelProviders.of")
+        viewModel = ViewModelProviders.of(this).get(GameViewModel::class.java)
 
         binding.correctButton.setOnClickListener { onCorrect() }
         binding.skipButton.setOnClickListener { onSkip() }
         updateScoreText()
         updateWordText()
         return binding.root
-
     }
 
-    /**
-     * Resets the list of words and randomizes the order
-     */
-    private fun resetList() {
-        wordList = mutableListOf(
-                "queen",
-                "hospital",
-                "basketball",
-                "cat",
-                "change",
-                "snail",
-                "soup",
-                "calendar",
-                "sad",
-                "desk",
-                "guitar",
-                "home",
-                "railway",
-                "zebra",
-                "jelly",
-                "car",
-                "crow",
-                "trade",
-                "bag",
-                "roll",
-                "bubble"
-        )
-        wordList.shuffle()
-    }
-
-    /** Methods for buttons presses **/
-
-    private fun onSkip() {
-        if (!wordList.isEmpty()) {
-            score--
-        }
-        nextWord()
-    }
-
-    private fun onCorrect() {
-        if (!wordList.isEmpty()) {
-            score++
-        }
-        nextWord()
-    }
-
-    /**
-     * Moves to the next word in the list
-     */
-    private fun nextWord() {
-        if (!wordList.isEmpty()) {
-            //Select and remove a word from the list
-            word = wordList.removeAt(0)
-        }
-        updateWordText()
+    fun onSkip() {
+        viewModel.onSkip()
         updateScoreText()
+        updateWordText()
+    }
+
+    fun onCorrect() {
+        viewModel.onCorrect()
+        updateScoreText()
+        updateWordText()
     }
 
 
     /** Methods for updating the UI **/
-
     private fun updateWordText() {
-        binding.wordText.text = word
+        binding.wordText.text = viewModel.word
     }
 
     private fun updateScoreText() {
-        binding.scoreText.text = score.toString()
+        binding.scoreText.text = viewModel.score.toString()
     }
 }
