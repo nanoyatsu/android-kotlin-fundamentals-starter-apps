@@ -21,6 +21,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.marsrealestate.network.MarsApi
+import com.example.android.marsrealestate.network.MarsProperty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -40,6 +41,10 @@ class OverviewViewModel : ViewModel() {
     val response: LiveData<String>
         get() = _response
 
+    private val _property = MutableLiveData<MarsProperty>()
+    val property: LiveData<MarsProperty>
+        get() = _property
+
     /**
      * Call getMarsRealEstateProperties() on init so we can display status immediately.
      */
@@ -56,6 +61,7 @@ class OverviewViewModel : ViewModel() {
             try {
                 val listResult = getPropertiesDeferred.await()
                 _response.value = "Success: ${listResult.size} Mars properties retrieved"
+                if (listResult.isNotEmpty()) _property.value = listResult.first()
 
             } catch (e: Exception) {
                 _response.value = "Failure: " + e.message
