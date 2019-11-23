@@ -31,6 +31,12 @@ import kotlinx.coroutines.launch
  * The [ViewModel] that is attached to the [OverviewFragment].
  */
 class OverviewViewModel : ViewModel() {
+    enum class MarsApiStatus { LOADING, ERROR, DONE }
+
+    private val _status = MutableLiveData<MarsApiStatus>()
+    val status: LiveData<MarsApiStatus>
+        get() = _status
+
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -59,12 +65,13 @@ class OverviewViewModel : ViewModel() {
         coroutineScope.launch {
             val getPropertiesDeferred = MarsApi.retrofitService.getProperties()
             try {
+                _status.value = MarsApiStatus.LOADING
                 val listResult = getPropertiesDeferred.await()
                 _properties.value = listResult
-                _response.value = "Success: ${listResult.size} Mars properties retrieved"
-
+                _status.value = MarsApiStatus.DONE
             } catch (e: Exception) {
-                _response.value = "Failure: " + e.message
+                _status.value = MarsApiStatus.ERROR
+                _properties.value = ArrayList()
             }
 
         }
