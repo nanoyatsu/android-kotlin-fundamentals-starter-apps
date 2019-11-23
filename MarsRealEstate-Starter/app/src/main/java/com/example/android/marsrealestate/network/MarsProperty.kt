@@ -23,5 +23,6 @@ data class MarsProperty(
         val id: String,
         @Json(name = "img_src") val imgSrc: String,
         val type: String,
-        val price: Double
-)
+        val price: Double) {
+    public val isRental get() = type == "rent"
+}
