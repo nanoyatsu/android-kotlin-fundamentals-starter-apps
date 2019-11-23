@@ -20,18 +20,21 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-   <data>
-       <variable
-           name="viewModel"
-           type="com.example.android.marsrealestate.overview.OverviewViewModel" />
-   </data>
+
+    <data>
+
+        <variable
+            name="property"
+            type="com.example.android.marsrealestate.network.MarsProperty" />
+    </data>
+
     <ImageView
         android:id="@+id/mars_image"
         android:layout_width="match_parent"
         android:layout_height="170dp"
-        android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:padding="2dp"
-        tools:src="@tools:sample/backgrounds/scenic"
-        app:imageUrl="@{viewModel.property.imgSrc}"/>
+        android:scaleType="centerCrop"
+        app:imageUrl="@{property.imgSrc}"
+        tools:src="@tools:sample/backgrounds/scenic" />
 </layout>
